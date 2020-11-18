@@ -2,4 +2,7 @@
 layout: home
 ---
 
-这是一个默认首页
+# 一个创建库的demo
+便于快速创建自己的第三方库
+
+https://github.com/napoler/python_libs_demo
