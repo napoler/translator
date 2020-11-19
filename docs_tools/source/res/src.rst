@@ -4,14 +4,6 @@ src package
 Submodules
 ----------
 
-src.demo module
----------------
-
-.. automodule:: src.demo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 src.translator module
 ---------------------
 
