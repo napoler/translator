@@ -7,7 +7,10 @@
 #安装
 pip install -U Sphinx
 #安装主题
-pip install sphinx_rtd_theme
+#pip install sphinx_rtd_theme
+#https://sphinx-book-theme.readthedocs.io/en/latest/index.html
+pip install sphinx-book-theme
+
 
 # https://github.com/lotharschulz/sphinx-pages
 pip install sphinx-autobuild 
