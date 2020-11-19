@@ -9,7 +9,7 @@ translator是一个翻译接口
 
 ### 安装
 ```
-pip install translator
+pip install tkitTranslator
 ```
 
 
