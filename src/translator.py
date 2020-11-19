@@ -9,6 +9,7 @@ import json
 class Translator:
     """
     一个爬取deepl翻译结果的类
+    需要安在splash使用，建议使用docker
     """
     def __init__(self,hosts="http://localhost:8050"):
         """
@@ -23,20 +24,15 @@ class Translator:
         api=self.hosts+"/execute"
         #这里写lua脚本
 
-        lua_source="""
-	function main(splash, args)
+        lua_source='''function main(splash, args)
 	  splash:set_custom_headers({
 	   ["Accept-Language"] = "zh,zh-CN;q=0.5"
 		})
 	  assert(splash:go(args.url))
-
- 
- 
-
-	  assert(splash:wait(10.5))
+	  assert(splash:wait(0.5))
 	  local input = splash:select('.lmt__source_textarea')
 	  input:mouse_click()
-	  input:send_text(" """+text+""" ")
+	  input:send_text([[ '''+text+''' ]])
 	  input:mouse_click()
       local data = splash:select('#target-dummydiv')
      --循环最多一百次
@@ -56,16 +52,14 @@ class Translator:
 	  return {
 	    --html = splash:html(),
 	    --html = data.node.innerHTML,
-        Tdata = data.node.innerHTML,
+        data = data.node.innerHTML,
 	    --png = splash:png(),
 	    --har = splash:har(),
 	  }
 	  --]]
-	end
-	  
-         
-
-        """
+	end'''
+        #print(lua_source)
+        #exit();
         args={
             "url":"https://www.deepl.com/translator",
             "timeout":360,
