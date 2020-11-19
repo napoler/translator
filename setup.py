@@ -25,10 +25,10 @@ long_description=read_file("README.md")
 setup(
     name='tkitTranslator', #修改包名字
     version='0.0.0.1',
-    description='Terry toolkit tkitDemo',
+    description='Terry tkitTranslator 翻译',
     author='Terry Chan',
     author_email='napoler2008@gmail.com',
-    url='http://www.terrychan.org/python_libs_demo/',
+    url='https://www.terrychan.org/translator/',
     install_requires=read_requirements('requirements.txt'),  # 指定需要安装的依赖
     long_description=long_description,
     long_description_content_type="text/markdown",

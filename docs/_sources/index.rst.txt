@@ -3,9 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to translator's documentation!
+translator's documentation!
 ======================================
+translator是一个翻译接口
+安装
+```
+pip install translator
+```
 
+
+translator's documentation!
+======================================
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
