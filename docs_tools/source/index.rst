@@ -9,7 +9,9 @@ Welcome to translator's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
+   res/modules
+   
 
 
 Indices and tables
