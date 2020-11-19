@@ -1,11 +1,16 @@
 #! /usr/bin/bash
 
 # 自动构建脚本
+# 文档 http://www.pythondoc.com/sphinx/tutorial.html
 
 
+#安装
+pip install -U Sphinx
 
 #
-sphinx-apidoc -o ./source ../src
+#清理之前生成的文档
+rm -rf ./source/res/
+sphinx-apidoc -o ./source/res ../src
 
 #编译成为html
 make html
