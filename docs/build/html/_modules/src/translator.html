@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html lang="zh_cn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>src.translator &#8212; Translator 0.1 文档</title>
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>src.translator 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">一个爬取翻译结果的类</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<div class="viewcode-block" id="Translator"><a class="viewcode-back" href="../../src.html#src.translator.Translator">[文档]</a><span class="k">class</span> <span class="nc">Translator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    一个爬取deepl翻译结果的类</span>
+<span class="sd">    需要安在splash使用，建议使用docker</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hosts</span><span class="o">=</span><span class="s2">&quot;http://localhost:8050&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        预定义服务器数据</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="o">=</span><span class="n">hosts</span>
+<div class="viewcode-block" id="Translator.render"><a class="viewcode-back" href="../../src.html#src.translator.Translator.render">[文档]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello word&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        解析数据函数</span>
+<span class="sd">        这里只需要传入text需要翻译的数据即可</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="o">+</span><span class="s2">&quot;/execute&quot;</span>
+        <span class="c1">#这里写lua脚本</span>
+
+        <span class="n">lua_source</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;function main(splash, args)</span>
+<span class="s1">	  splash:set_custom_headers({</span>
+<span class="s1">	   [&quot;Accept-Language&quot;] = &quot;zh,zh-CN;q=0.5&quot;</span>
+<span class="s1">		})</span>
+<span class="s1">	  assert(splash:go(args.url))</span>
+<span class="s1">	  assert(splash:wait(0.5))</span>
+<span class="s1">	  local input = splash:select(&#39;.lmt__source_textarea&#39;)</span>
+<span class="s1">	  input:mouse_click()</span>
+<span class="s1">	  input:send_text([[ &#39;&#39;&#39;</span><span class="o">+</span><span class="n">text</span><span class="o">+</span><span class="s1">&#39;&#39;&#39; ]])</span>
+<span class="s1">	  input:mouse_click()</span>
+<span class="s1">      local data = splash:select(&#39;#target-dummydiv&#39;)</span>
+<span class="s1">     --循环最多一百次</span>
+<span class="s1">        for i=100,1,-1 do</span>
+<span class="s1">            splash:wait(0.5)</span>
+<span class="s1">            --如果获取到数据则退出</span>
+<span class="s1">            if data.node.innerHTML~= nil then</span>
+<span class="s1">                break</span>
+<span class="s1">            end</span>
+<span class="s1">            </span>
+
+<span class="s1">        end</span>
+<span class="s1">	  --assert(splash:wait(25.5))</span>
+<span class="s1">	  --local data = splash:select(&#39;#target-dummydiv&#39;)</span>
+<span class="s1">	  --return data.node.innerHTML</span>
+
+<span class="s1">	  return {</span>
+<span class="s1">	    --html = splash:html(),</span>
+<span class="s1">	    --html = data.node.innerHTML,</span>
+<span class="s1">        data = data.node.innerHTML,</span>
+<span class="s1">	    --png = splash:png(),</span>
+<span class="s1">	    --har = splash:har(),</span>
+<span class="s1">	  }</span>
+<span class="s1">	  --]]</span>
+<span class="s1">	end&#39;&#39;&#39;</span>
+        <span class="c1">#print(lua_source)</span>
+        <span class="c1">#exit();</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="s2">&quot;https://www.deepl.com/translator&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;timeout&quot;</span><span class="p">:</span><span class="mi">360</span><span class="p">,</span>
+           <span class="c1">#&quot;html&quot;:1,</span>
+            <span class="c1">#&quot;wait&quot;:0.5,</span>
+            <span class="s2">&quot;lua_source&quot;</span><span class="p">:</span><span class="n">lua_source</span>
+
+        <span class="p">}</span>
+        <span class="c1"># response =requests.get(api,params=args)</span>
+        <span class="n">response</span> <span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api</span><span class="p">,</span><span class="n">json</span><span class="o">=</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+
+
+
+        <span class="k">pass</span></div>
+<div class="viewcode-block" id="Translator.fun"><a class="viewcode-back" href="../../src.html#src.translator.Translator.fun">[文档]</a>    <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;fun run!&quot;</span><span class="p">)</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Translator</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">src</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">模块代码</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Terry Chan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
