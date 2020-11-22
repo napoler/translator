@@ -10,6 +10,9 @@ class Translator:
     """
     一个爬取deepl翻译结果的类
     需要安在splash使用，建议使用docker
+    >>> from tkitTranslator import  Translator
+    >>> T = Translator()
+    
     """
     def __init__(self,hosts="http://localhost:8050"):
         """
