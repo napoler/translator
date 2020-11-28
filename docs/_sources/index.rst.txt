@@ -8,6 +8,8 @@ translator
 translator是一个翻译接口。
 借助splash自动获取搜索结果。\n
 
+订阅DeepL Pro以翻译超过免费版网页翻译的5000 字符限制。
+
 ### 安装
 ```
 pip install tkitTranslator

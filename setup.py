@@ -18,26 +18,26 @@ def read_requirements(filename):
 
 # 这里是说明
 # 一个翻译接口
-# http://www.terrychan.org/python_libs_demo/
+# https://www.terrychan.org/translator/
 # """
 
 long_description=read_file("README.md")
 setup(
     name='tkitTranslator', #修改包名字
-    version='0.1',
+    version='0.1.2',
     description='Terry tkitTranslator 翻译',
     author='Terry Chan',
     author_email='napoler2008@gmail.com',
     url='https://www.terrychan.org/translator/',
-    install_requires=read_requirements('requirements.txt'),  # 指定需要安装的依赖
+    # install_requires=read_requirements('requirements.txt'),  # 指定需要安装的依赖
     long_description=long_description,
     long_description_content_type="text/markdown",
-    # install_requires=[
-    #     # 'beautifulsoup4==4.7.1',
+    install_requires=[
+        'requests==2.22.0',
 
 
-    # ],
-    packages=['src'])
+    ],
+    packages=['tkitTranslator'])
 
 """
 pip freeze > requirements.txt
