@@ -6,8 +6,8 @@ import sys
 sys.path.append("../")
 # 引入本地库
 import tkitTranslator
-Demo =src.Translator()
-
+Demo =tkitTranslator.Translator(proxy="tor")
+# Demo =tkitTranslator.Translator()
 while True:
 	text=input("输入文本（自动中英）：")
 	print(Demo.render(text))

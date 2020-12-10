@@ -15,11 +15,17 @@ class Translator:
     >>> T = Translator()
 
     """
-    def __init__(self,hosts="http://localhost:8050"):
+    def __init__(self,hosts="http://localhost:8050",proxy=None):
         """
         预定义服务器数据
+        proxy 为sudo docker run -d --name splash -p 8050:8050 -v /mnt/data/dev/github/translator/proxy:/etc/splash/proxy-profiles -p 5023:5023  scrapinghub/splash --max-timeout 3600 
+        /mnt/data/dev/github/translator/proxy里的配置文件名称
+        更多资料查看：
+        https://github.com/napoler/napoler.github.io/blob/master/_posts/2020-12-10-slpash%E5%90%AF%E7%94%A8tor%E4%BB%A3%E7%90%86.md
         """
         self.hosts=hosts
+        self.proxy=str(proxy)
+
     def render(self,text='hello word'):
         """
         解析数据函数
@@ -62,8 +68,10 @@ class Translator:
 	  }
 	  --]]
 	end'''
-        #print(lua_source)
+        print(lua_source)
         #exit();
+
+
         args={
             "url":"https://www.deepl.com/translator",
             "timeout":360,
@@ -72,6 +80,9 @@ class Translator:
             "lua_source":lua_source
 
         }
+        if self.proxy!=None:
+            args["proxy"]=self.proxy
+
         # response =requests.get(api,params=args)
         response =requests.post(api,json= args)
         try:

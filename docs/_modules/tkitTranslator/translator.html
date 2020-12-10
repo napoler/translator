@@ -153,11 +153,17 @@
 <span class="sd">    &gt;&gt;&gt; T = Translator()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hosts</span><span class="o">=</span><span class="s2">&quot;http://localhost:8050&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hosts</span><span class="o">=</span><span class="s2">&quot;http://localhost:8050&quot;</span><span class="p">,</span><span class="n">proxy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        预定义服务器数据</span>
+<span class="sd">        proxy 为sudo docker run -d --name splash -p 8050:8050 -v /mnt/data/dev/github/translator/proxy:/etc/splash/proxy-profiles -p 5023:5023  scrapinghub/splash --max-timeout 3600 </span>
+<span class="sd">        /mnt/data/dev/github/translator/proxy里的配置文件名称</span>
+<span class="sd">        更多资料查看：</span>
+<span class="sd">        https://github.com/napoler/napoler.github.io/blob/master/_posts/2020-12-10-slpash%E5%90%AF%E7%94%A8tor%E4%BB%A3%E7%90%86.md</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span><span class="o">=</span><span class="n">hosts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">proxy</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Translator.render"><a class="viewcode-back" href="../../res/tkitTranslator.html#tkitTranslator.translator.Translator.render">[文档]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello word&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        解析数据函数</span>
@@ -200,8 +206,10 @@
 <span class="s1">	  }</span>
 <span class="s1">	  --]]</span>
 <span class="s1">	end&#39;&#39;&#39;</span>
-        <span class="c1">#print(lua_source)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">lua_source</span><span class="p">)</span>
         <span class="c1">#exit();</span>
+
+
         <span class="n">args</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">&quot;url&quot;</span><span class="p">:</span><span class="s2">&quot;https://www.deepl.com/translator&quot;</span><span class="p">,</span>
             <span class="s2">&quot;timeout&quot;</span><span class="p">:</span><span class="mi">360</span><span class="p">,</span>
@@ -210,6 +218,9 @@
             <span class="s2">&quot;lua_source&quot;</span><span class="p">:</span><span class="n">lua_source</span>
 
         <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span><span class="o">!=</span><span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">proxy</span>
+
         <span class="c1"># response =requests.get(api,params=args)</span>
         <span class="n">response</span> <span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api</span><span class="p">,</span><span class="n">json</span><span class="o">=</span> <span class="n">args</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
