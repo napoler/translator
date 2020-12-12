@@ -24,16 +24,27 @@ class Translator:
         https://github.com/napoler/napoler.github.io/blob/master/_posts/2020-12-10-slpash%E5%90%AF%E7%94%A8tor%E4%BB%A3%E7%90%86.md
         """
         self.hosts=hosts
-        self.proxy=str(proxy)
-
+        self.proxy=proxy
+    def E_trans_to_C(self,string):
+        """英文标点转换微中文标点
+        
+        """
+        E_pun = u',.!?[]()<>"\''
+        C_pun = u'，。！？【】（）《》“‘'
+        table= {ord(f):ord(t) for f,t in zip(E_pun,C_pun)}
+        return string.translate(table)
     def render(self,text='hello word'):
         """
         解析数据函数
         这里只需要传入text需要翻译的数据即可
         """
         api=self.hosts+"/execute"
+        text=self.E_trans_to_C(text)
         #这里写lua脚本
+        if len(text)==0:
+            print("翻译内容为空")
 
+            return {}
         lua_source='''function main(splash, args)
 	  splash:set_custom_headers({
 	   ["Accept-Language"] = "zh,zh-CN;q=0.5"
@@ -46,15 +57,14 @@ class Translator:
 	  input:mouse_click()
       local data = splash:select('#target-dummydiv')
      --循环最多一百次
-        for i=100,1,-1 do
+        for i=1000,1,-1 do
             splash:wait(0.5)
             --如果获取到数据则退出
             if data.node.innerHTML~= nil then
                 break
             end
-            
-
         end
+
 	  --assert(splash:wait(25.5))
 	  --local data = splash:select('#target-dummydiv')
 	  --return data.node.innerHTML
@@ -68,7 +78,7 @@ class Translator:
 	  }
 	  --]]
 	end'''
-        print(lua_source)
+        # print(lua_source)
         #exit();
 
 
